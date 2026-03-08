@@ -72,7 +72,7 @@
         <div id="login" v-if="!loggedin" class="login">
             <form v-on:submit.prevent="login()" class="bg-light p-3" style="width: 70%;">
                 <h5>Welcome to the Chatroom</h5>
-                <div class="form-group">
+                <div class="form-group" style="display:none;">
                     <label for="functionHost">Function Endpoint</label>
                     <input type="text" class="form-control" v-model="endpoint" id="functionEndpoint" placeholder="https://jixin-simplechat-linux.azurewebsites.net/">
                 </div>
@@ -100,7 +100,6 @@
             </nav>
 
             <main role="main" class="col d-flex flex-column flex-nowrap p-md-4 p-2">
-                <h5>Chat on {{endpoint}}</h5>
                 <div id="chat" style="flex:1" class="bg-light">
                     <div class="m-2" v-for="message in chat.messages" v-bind:key="message.id">
                         <div class="col-md row" style="display: inline-block;">
