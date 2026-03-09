@@ -516,7 +516,7 @@
 						});
 						svg.prepend(grid);
 					}
-					setAttr(grid,{'fill':'url(#'+id+'-pattern-'+this.properties.orientation});
+					setAttr(grid, {fill: `url(#${id}-pattern-${this.properties.orientation})`});
 					this._origin.addPattern(el,this.id+'-pattern-q',"odd-q",this._origin.x,this._origin.y);
 					this._origin.addPattern(el,this.id+'-pattern-r',"odd-r",this._origin.x,this._origin.y);
 				}
