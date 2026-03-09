@@ -17,10 +17,22 @@
   <body>
     <figure>
     	<div id="hexmap3"></div>
-    	<figcaption>Cartogram showing UK constituencies coloured by the number of signatures they received on House of Commons petitions during 2017-2019. Data from The House of Commons Library. Layout by Open Innovations and contributors.</figcaption>
     </figure>
   </body>
   <script>
+
+      let jHex = {layout:"odd-r",hexes:{}};
+      
+      for(let i=-10; i<10; i++)
+      {
+      	for(let j=-10; j<10; j++){
+      		jHex.hexes[`e${String(i).replace('-', 'n')}_${String(j).replace('-', 'n')}`] = {
+      			q:i,
+      			r:j,
+      			terrain:'tree'
+      		}
+      	}
+      }    
       // Define a colour scale helper function
       function ColourScale(c){
       	let s, n;
@@ -52,10 +64,12 @@
       hex = new OI.hexmap(document.getElementById('hexmap3'),{
       	'grid': {'show':true},
       	// The HexJSON layout
-      	'hexjson':'resources/constituencies.hexjson',
+      	//'hexjson':'resources/constituencies.hexjson',
+        'hexjson':jHex,
       	// Once we've loaded the map the ready function is called
       	'ready':function(){
-      		const url = 'resources/2017-9.json';
+      		/*
+          const url = 'resources/2017-9.json';
       		// Load the data
       		fetch(url)
       		.then(function(response){ return response.json(); })
@@ -77,6 +91,7 @@
       				if(props.type=="country") return {'stroke':'white','stroke-width':3,'stroke-linecap':'round','opacity':0.9};
       				if(props.type=="region") return {'stroke':'white','stroke-width':3,'stroke-linecap':'round','opacity':0.4};
       			});
+            */
       		}.bind(this)).catch(function(error){
       			console.log(this,error);
       			this.log('ERROR','Unable to load '+url);
@@ -98,7 +113,7 @@
       		svg.appendChild(tip);
       	}
       	// Update contents of tooltip
-      	tip.innerHTML = e.data.data.n+'<br />'+e.data.hexmap.data[e.data.region].toLocaleString()+' signatures<br />Coordinates: '+e.data.data.q+','+e.data.data.r+'<br />Region: '+e.data.data.a;
+      	tip.innerHTML = `Coordinates: ${e.data.data.q},${e.data.data.r)<br />Terrain: ${e.data.data.terrain}`;
       	// Update position of tooltip
       	bb = hex.getBoundingClientRect();
       	bbo = svg.getBoundingClientRect();
