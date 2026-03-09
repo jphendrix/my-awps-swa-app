@@ -20,105 +20,50 @@
     </figure>
   </body>
   <script>
+    let jHex = {layout:"odd-r",hexes:{}};
+    
+    for(let i=-100; i<100; i++)
+    {
+    	for(let j=-10; j<10; j++){
+    		jHex.hexes[`h${q}_${i}`] = {
+    			q:i,
+    			r:j,
+    			terrain:'tree'
+    		}
+    	}
+    }
 
-      let jHex = {layout:"odd-r",hexes:{}};
+    hex = new OI.hexmap(document.getElementById('hexmap3'),{
+    	'grid': {'show':true},
+    	'hexjson':jHex,
+    	'ready':function(){
+    		console.log('ready')
+    	}
+    });
+
+    hex.on('mouseover',function(e){
+      let svg, tip, bb, bbo, hex;
+      svg = e.data.hexmap.el;
+      hex = e.target;
       
-      for(let i=-10; i<10; i++)
-      {
-      	for(let j=-10; j<10; j++){
-      		jHex.hexes[`e${String(i).replace('-', 'n')}_${String(j).replace('-', 'n')}`] = {
-      			q:i,
-      			r:j,
-      			terrain:'tree'
-      		}
-      	}
-      }    
-      // Define a colour scale helper function
-      function ColourScale(c){
-      	let s, n;
-      	s = c;
-      	n = s.length;
-      	// Get a colour given a value, and the range minimum/maximum
-      	this.getValue = function(v,min,max){
-      		let c, a, b;
-      		v = (v-min)/(max-min);
-      		if(v<0) return 'rgb('+s[0].rgb.join(',')+')';
-      		if(v>=1) return 'rgb('+s[n-1].rgb.join(',')+')';
-      		for(c = 0; c < n-1; c++){
-      			a = s[c];
-      			b = s[c+1];
-      			if(v >= a.v && v < b.v){
-      				pc = Math.min(1,(v - a.v)/(b.v-a.v));
-      				rgb = [Math.round(a.rgb[0] + (b.rgb[0]-a.rgb[0])*pc),Math.round(a.rgb[1] + (b.rgb[1]-a.rgb[1])*pc),Math.round(a.rgb[2] + (b.rgb[2]-a.rgb[2])*pc)];
-      				return 'rgb('+rgb.join(',')+')';
-      			}
-      		}
-      	};
-      	return this;
+      // Get any existing tooltip for this hexmap
+      tip = svg.querySelector('.tooltip');
+      if(!tip){
+      	// Add a new tooltip
+      	tip = document.createElement('div');
+      	tip.classList.add('tooltip');
+      	svg.appendChild(tip);
       }
       
-      // Define the Viridis colour scale
-      viridis = new ColourScale([{'rgb':[68,1,84],v:0},{'rgb':[72,35,116],'v':0.1},{'rgb':[64,67,135],'v':0.2},{'rgb':[52,94,141],'v':0.3},{'rgb':[41,120,142],'v':0.4},{'rgb':[32,143,140],'v':0.5},{'rgb':[34,167,132],'v':0.6},{'rgb':[66,190,113],'v':0.7},{'rgb':[121,209,81],'v':0.8},{'rgb':[186,222,39],'v':0.9},{'rgb':[253,231,36],'v':1}]);
+      // Update contents of tooltip
+      tip.innerHTML = `Coordinates: ${e.data.data.q},${e.data.data.r}<br />Terrain: ${e.data.data.terrain}`;
       
-      // Create the hexagon layout
-      hex = new OI.hexmap(document.getElementById('hexmap3'),{
-      	'grid': {'show':true},
-      	// The HexJSON layout
-      	//'hexjson':'resources/constituencies.hexjson',
-        'hexjson':jHex,
-      	// Once we've loaded the map the ready function is called
-      	'ready':function(){
-      		/*
-          const url = 'resources/2017-9.json';
-      		// Load the data
-      		fetch(url)
-      		.then(function(response){ return response.json(); })
-      		.then(function(data){
-      			// Process the data file to find the minimum and maximum
-      			let min = 1e100;
-      			let max = -1e100;
-      			for(const r in data){
-      				min = Math.min(data[r],min);
-      				max = Math.max(data[r],max);
-      			}
-      			this.data = data;
-      			
-      			// Update the hex colours
-      			this.updateColours(function(r){ return viridis.getValue(data[r],min,max); });
-      			
-      			// Update the line styles
-      			this.updateBoundaries(function(n,props){
-      				if(props.type=="country") return {'stroke':'white','stroke-width':3,'stroke-linecap':'round','opacity':0.9};
-      				if(props.type=="region") return {'stroke':'white','stroke-width':3,'stroke-linecap':'round','opacity':0.4};
-      			});
-            */
-      		}.bind(this).catch(function(error){
-      			console.log(this,error);
-      			this.log('ERROR','Unable to load '+url);
-      		});
-      	}
-      });
-      
-      // Make a tooltip
-      hex.on('mouseover',function(e){
-      	let svg, tip, bb, bbo, hex;
-      	svg = e.data.hexmap.el;
-      	hex = e.target;
-      	// Get any existing tooltip for this hexmap
-      	tip = svg.querySelector('.tooltip');
-      	if(!tip){
-      		// Add a new tooltip
-      		tip = document.createElement('div');
-      		tip.classList.add('tooltip');
-      		svg.appendChild(tip);
-      	}
-      	// Update contents of tooltip
-      	tip.innerHTML = `Coordinates: ${e.data.data.q},${e.data.data.r)<br />Terrain: ${e.data.data.terrain}`;
-      	// Update position of tooltip
-      	bb = hex.getBoundingClientRect();
-      	bbo = svg.getBoundingClientRect();
-      	tip.style.left = Math.round(bb.left + bb.width/2 - bbo.left + svg.scrollLeft)+'px';
-      	tip.style.top = Math.round(bb.top + bb.height/2 - bbo.top)+'px';
-      });
-    </script>  
+      // Update position of tooltip
+      bb = hex.getBoundingClientRect();
+      bbo = svg.getBoundingClientRect();
+      tip.style.left = Math.round(bb.left + bb.width/2 - bbo.left + svg.scrollLeft)+'px';
+      tip.style.top = Math.round(bb.top + bb.height/2 - bbo.top)+'px';
+    });
+
+  </script>  
 </html>
