@@ -20,15 +20,46 @@
     </figure>
   </body>
   <script>
+    let terrain = {
+      types:{
+        arctic:{p:0.0},
+        coast:{p:0.0},
+        desert:{p:0.0},
+        forest:{p:0.10},
+        grassland:{p:0.10},
+        mountain:{p:0.10},
+        swamp:{p:0.10}
+      },
+
+      random: function(){
+        // Build an array of [type, weight]
+        const entries = Object.entries(this.types);
+    
+        // Sum total probability
+        const total = entries.reduce((sum, [, obj]) => sum + obj.p, 0);
+    
+        // Roll
+        let r = Math.random() * total;
+    
+        // Walk the list until we hit the bucket
+        for (const [type, obj] of entries) {
+          if (r < obj.p) {
+            return type;
+          }
+          r -= obj.p;
+        }
+      }
+  };
+    
     let jHex = {layout:"odd-r",hexes:{}};
     
-    for(let i=-100; i<100; i++)
+    for(let i=-10; i<10; i++)
     {
     	for(let j=-10; j<10; j++){
     		jHex.hexes[`h${i}_${j}`] = {
     			q:i,
     			r:j,
-    			terrain:'tree'
+    			terrain:terrain.random()
     		}
     	}
     }
