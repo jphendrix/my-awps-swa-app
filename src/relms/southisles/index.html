@@ -92,7 +92,7 @@
       				if(props.type=="region") return {'stroke':'white','stroke-width':3,'stroke-linecap':'round','opacity':0.4};
       			});
             */
-      		}.bind(this)).catch(function(error){
+      		}.bind(this).catch(function(error){
       			console.log(this,error);
       			this.log('ERROR','Unable to load '+url);
       		});
